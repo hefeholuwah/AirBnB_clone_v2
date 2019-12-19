@@ -21,7 +21,7 @@ class DBStorage:
     """
     __engine = None
     __session = None
-    all_classes = {"State", "City"}#, "User", "Amenity", "Place", "Review"}
+    all_classes = {"State", "City"}""", "User", "Amenity", "Place", "Review"}"""
 
     def __init__(self):
         """create the engine and links it to the MySQL database and user"""
