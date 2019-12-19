@@ -4,6 +4,8 @@ from models.base_model import BaseModel, Base
 import models
 from sqlalchemy import Column, Integer, Float, String, ForeignKey
 from sqlalchemy.orm import relationship
+import os
+
 
 class Place(BaseModel, Base):
     """This is the class for Place
@@ -57,5 +59,18 @@ class Place(BaseModel, Base):
         nullable=True)
     longitude = Column(
         Float,
-        nullable=False)
+        nullable=True)
     amenity_ids = []
+    if os.getenv('HBNB_TYPE_STORAGE') == 'db':
+        reviews = relationship(
+            "Review",
+            backref="place",
+            cascade="all, delete-orphan")
+    else:
+        @property
+        def reviews(self):
+            l = []
+            for id, rvw in models.storage.all(Review).items():
+                if rvw.place.id == Review.id:
+                    l.append(rvw)
+            return l
