@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 """This is the user class"""
 from models.base_model import BaseModel, Base
-from sqlalchemy import Column, Integer, String, ForeignKey
+from sqlalchemy import Column, String
 from sqlalchemy.orm import relationship
 
 
@@ -26,8 +26,7 @@ class User(BaseModel, Base):
     last_name = Column(
         String(128),
         nullable=True)
-
-    """ PARENT OF PLACES """
-    """ places = relationship('Place', cascade="all, delete-orphan") """
-    """ PARENT OF REVIEWS """
-    """ reviews = relationship('Review', cascade="all, delete-orphan") """
+    places = relationship(
+        "Place",
+        backref="user",
+        cascade="all, delete-orphan")
