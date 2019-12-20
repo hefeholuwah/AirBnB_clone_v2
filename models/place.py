@@ -2,10 +2,26 @@
 """This is the place class"""
 from models.base_model import BaseModel, Base
 import models
-from sqlalchemy import Column, Integer, Float, String, ForeignKey
+from sqlalchemy import Column, Integer, Float, String, ForeignKey, Table
 from sqlalchemy.orm import relationship
 import os
 
+
+place_amenity = Table(
+    "place_amenity",
+    Base.metadata,
+    Column(
+        "place_id",
+        String(60),
+        ForeignKey("places.id"),
+        primary_key=True,
+        nullable=False),
+    Column(
+        "amenity_id",
+        String(60),
+        ForeignKey("amenities.id"),
+        primary_key=True,
+        nullable=False))
 
 class Place(BaseModel, Base):
     """This is the class for Place
@@ -66,6 +82,10 @@ class Place(BaseModel, Base):
             "Review",
             backref="place",
             cascade="all, delete-orphan")
+        amenities = relationship(
+            "Amenity",
+            secondary=place_amenity,
+            viewonly=False)
     else:
         @property
         def reviews(self):
@@ -74,3 +94,16 @@ class Place(BaseModel, Base):
                 if rvw.place.id == Review.id:
                     l.append(rvw)
             return l
+
+        @property
+        def amenities(self):
+            los_angeles = []
+            for angel in amenity_ids:
+                if angel.id == self.id:
+                    amenities_list.append(angel)
+            return los_angeles
+
+        @amenities.setter
+        def amenities(self, angel):
+            if type(angel) is Amenity:
+                self.amenity_ids.append(angel)
