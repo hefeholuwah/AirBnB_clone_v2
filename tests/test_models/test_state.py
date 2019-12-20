@@ -2,10 +2,11 @@
 """test for state"""
 import unittest
 import os
+from models import state
 from models.state import State
-from models.base_model import BaseModel
+from models.base_model import BaseModel, Base
 import pep8
-
+import sqlalchemy
 
 class TestState(unittest.TestCase):
     """this will test the State class"""
@@ -36,22 +37,59 @@ class TestState(unittest.TestCase):
 
     def test_checking_for_docstring_State(self):
         """checking for docstrings"""
+        self.assertIsNotNone(state.__doc__)
         self.assertIsNotNone(State.__doc__)
 
-    def test_attributes_State(self):
-        """chekcing if State have attributes"""
-        self.assertTrue('id' in self.state.__dict__)
-        self.assertTrue('created_at' in self.state.__dict__)
-        self.assertTrue('updated_at' in self.state.__dict__)
-        self.assertTrue('name' in self.state.__dict__)
+    def test_class_method_presence_State(self):
+        """Test that the State instance has the same methods"""
+        l1 = dir(State)
+        self.assertIn('__init__', l1)
+        self.assertIn('save', l1)
+        self.assertIn('to_dict', l1)
+        self.assertIn('__str__', l1)
+
+    @unittest.skipIf(os.getenv("HBNB_TYPE_STORAGE") == "db", "not a database")
+    def test_instance_method_presence_State_additional(self):
+        """Test that the State instance has the extra "cities" method"""
+        l1 = dir(State())
+        self.assertIn('cities', l1)
+
+    def test_class_attribute_presence_State(self):
+        """Test that the State attributes are all present"""
+        l1 = dir(State)
+        self.assertIn('name', l1)
+
+    def test_instance_attribute_presence(self):
+        """Test that the State instance attributes are all present"""
+        l1 = dir(State())
+        self.assertIn('id', l1)
+        self.assertIn('updated_at', l1)
+        self.assertIn('created_at', l1)
+        self.assertIn('__class__', l1)
+        self.assertIn('name', l1)
+
+    @unittest.skipIf(os.getenv("HBNB_TYPE_STORAGE") != "db", "not a database")
+    def test_class_attributes_State_db(self):
+        """chekcing if State have DBStorage-related attributes"""
+        l1 = dir(State)
+        self.assertIn('__tablename__', l1)
+        self.assertIn('cities', l1)
 
     def test_is_subclass_State(self):
         """test if State is subclass of BaseModel"""
         self.assertTrue(issubclass(self.state.__class__, BaseModel), True)
+        self.assertTrue(issubclass(self.state.__class__, Base), True)
 
     def test_attribute_types_State(self):
         """test attribute type for State"""
         self.assertEqual(type(self.state.name), str)
+
+    @unittest.skipIf(os.getenv("HBNB_TYPE_STORAGE") != "db", "not a database")
+    def test_attribute_types_State_db(self):
+        """test attribute type for State"""
+        self.assertEqual(type(self.state.__tablename__), str)
+        self.assertEqual(type(self.state.cities), sqlalchemy.orm.collections.
+                         InstrumentedList)
 
     def test_save_State(self):
         """test if the save works"""
