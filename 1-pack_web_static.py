@@ -7,14 +7,13 @@ from datetime import datetime
 
 def do_pack():
     """ pack """
-    archive_name = 'web_static_' +
-    datetime.strftime(datetime.now(), "%Y%m%d%I%M%S") +
-    '.tgz'
+    a = 'web_static_' + datetime.strftime(datetime.now(), "%Y%m%d%I%M%S")
+    tgz = a + '.tgz'
 
     local('mkdir -p versions')
     direc = 'versions/'
-    archive = local('tar -cvzf {}{} web_static'.format(direc, archive_name))
+    archive = local('tar -cvzf {}{} web_static'.format(direc, tgz))
     if archive.failed:
         return None
     if archive.succeeded:
-        return direc + archive_name
+        return direc + tgz
