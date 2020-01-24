@@ -20,6 +20,7 @@ def one_state(id):
     states = storage.all('State')["State.{}".format(id)]
     return render_template('9-states.html', states=states)
 
+
 @app.teardown_appcontext
 def session_off(self):
     """Shuts down app"""
