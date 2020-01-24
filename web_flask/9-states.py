@@ -17,7 +17,11 @@ def state_list():
 
 @app.route('/states/<id>', strict_slashes=False)
 def one_state(id):
-    states = storage.all('State')["State.{}".format(id)]
+    key = "State.{}".format(id)
+    if key in storage.all('State'):
+        states = storage.all('State')["State.{}".format(id)]
+    else:
+        states = None
     return render_template('9-states.html', states=states)
 
 
